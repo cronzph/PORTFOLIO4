@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#eef1f7" />
+    <meta
+      name="description"
+      content="Mark Icel Sarmiento — web and mobile development, AI automation, and Arduino/IoT builds."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/me.webp" as="image" />
+    <title>Mark Icel Sarmiento — Developer, Automation &amp; IoT</title>
+
+    <!-- Applies the saved theme before React mounts, so there is no flash. -->
+    <script>
+      (function () {
+        var saved = null;
+        try { saved = localStorage.getItem('portfolio-theme'); } catch (e) {}
+        var system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.dataset.theme = saved || system;
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

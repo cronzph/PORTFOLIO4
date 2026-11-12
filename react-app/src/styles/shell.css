@@ -1,0 +1,1095 @@
+﻿/* ══════════════════════════════════════════════════════════════════════════
+   SHELL — sidebar, hero, tools strip, bento board and the six home cards.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.app-shell {
+  position: relative;
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: 18px;
+  display: grid;
+  grid-template-columns: 272px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+/* ── Sidebar ────────────────────────────────────────────────────────────── */
+
+.sidebar {
+  position: sticky;
+  top: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+  /* Full-height card. The nav below absorbs the leftover height and spreads
+     its links, so the items fill the card instead of leaving one gap. */
+  min-height: calc(100vh - 36px);
+  max-height: calc(100vh - 36px);
+  padding: 22px 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  transition: background-color 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+
+/* On the home page the sidebar has to end exactly where the board ends. That
+   can be taller than the viewport, so it scrolls with the page instead of
+   sticking. The inline min-height comes from Sidebar.jsx. */
+.sidebar--board {
+  position: static;
+  max-height: none;
+  overflow: visible;
+}
+
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.profile__avatar {
+  width: 112px;
+  height: 112px;
+  flex: 0 0 auto;
+  padding: 0;
+  border-radius: 34px;
+  overflow: hidden;
+  background: linear-gradient(150deg, #fde3cf, #e9e6ff);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: border-color 0.25s var(--ease);
+}
+
+.profile__avatar:hover {
+  border-color: var(--line-strong);
+}
+
+.profile__avatar:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+}
+
+.profile__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 0.5s var(--ease);
+}
+
+.profile__avatar:hover img {
+  transform: scale(1.05);
+}
+
+.profile__name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.profile__status {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--ok);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.16);
+}
+
+.profile__handle {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-mute);
+}
+
+.socials {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 20px 0 22px;
+}
+
+/* Each link carries its brand colour, so the mark reads as a solid logo
+   instead of a grey outline. The tile is a tint of that same colour. */
+.social {
+  --brand: var(--text-soft);
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  border: 1px solid color-mix(in srgb, var(--brand) 26%, transparent);
+  background: color-mix(in srgb, var(--brand) 9%, var(--surface));
+  color: var(--brand);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease),
+    background-color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+
+.social:hover {
+  border-color: color-mix(in srgb, var(--brand) 45%, transparent);
+  background: color-mix(in srgb, var(--brand) 16%, var(--surface));
+  transform: translateY(-1px);
+}
+
+.social--github {
+  --brand: #181717;
+}
+
+.social--linkedin {
+  --brand: #0a66c2;
+}
+
+.social--facebook {
+  --brand: #1877f2;
+}
+
+/* GitHub's mark is black, which disappears on the dark surface. */
+[data-theme="dark"] .social--github {
+  --brand: #e9edf6;
+}
+
+[data-theme="dark"] .social--linkedin {
+  --brand: #4ea1e8;
+}
+
+[data-theme="dark"] .social--facebook {
+  --brand: #5b9cf8;
+}
+
+.social--theme .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.sidebar__top {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.nav__link {
+  position: relative;
+  display: flex;
+  flex: 1;
+  max-height: 72px;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 11px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-soft);
+  transition: background-color 0.18s var(--ease), color 0.18s var(--ease);
+}
+
+.nav__link .icon {
+  width: 17px;
+  height: 17px;
+  color: var(--text-mute);
+  transition: color 0.18s var(--ease);
+}
+
+.nav__link:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.nav__link.is-active {
+  background: var(--surface-2);
+  color: var(--text);
+  font-weight: 650;
+}
+
+.nav__link.is-active .icon {
+  color: var(--accent);
+}
+
+.nav__badge {
+  margin-left: auto;
+  padding: 1px 6px;
+  border-radius: 99px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--text-mute);
+}
+
+.sidebar__bottom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.sidebar__mark {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  border: 1px solid var(--line);
+}
+
+.copyright {
+  font-size: 10.5px;
+  line-height: 1.7;
+  color: var(--text-mute);
+}
+
+/* ── Hero ───────────────────────────────────────────────────────────────── */
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 20px 6px 8px;
+}
+
+.hero__text {
+  flex: 1;
+  min-width: 0;
+  container-type: inline-size;
+}
+
+/* Sized in cqi so the headline always fills its row on one line, at any width. */
+.hero__title {
+  font-size: clamp(1rem, 5.4cqi, 4.6rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.042em;
+  white-space: nowrap;
+}
+
+.hero__title span {
+  display: inline-block;
+}
+
+.hero__title-soft {
+  color: #f97316;
+}
+
+.hero__lede {
+  margin-top: 12px;
+  max-width: 84ch;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-soft);
+}
+
+/* ── Tools strip ────────────────────────────────────────────────────────── */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 10px 8px 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 0 0 5px var(--glow), var(--shadow-soft);
+  transition: background-color 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+
+.toolbar__label {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.toolbar__label span {
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+}
+
+.toolbar__label strong {
+  font-size: 12.5px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.toolbar__divider {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 26px;
+  background: var(--line);
+}
+
+.toolbar__chips {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  padding: 2px;
+  /* Fade the edges so the loop does not cut a chip in half. */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 26px, #000 calc(100% - 26px), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 26px, #000 calc(100% - 26px), transparent);
+}
+
+.toolbar__track {
+  display: flex;
+  width: max-content;
+  /* Long list, so the loop needs a slow, steady pace to stay readable. */
+  animation: tool-marquee 90s linear infinite;
+}
+
+.toolbar:hover .toolbar__track,
+.toolbar:focus-within .toolbar__track {
+  animation-play-state: paused;
+}
+
+.toolbar__group {
+  display: flex;
+  gap: 6px;
+  padding-right: 6px;
+}
+
+@keyframes tool-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-25%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolbar__track {
+    animation: none;
+  }
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  font-size: 11.5px;
+  font-weight: 550;
+  color: var(--text-soft);
+  white-space: nowrap;
+}
+
+.chip::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dot, var(--accent-2));
+}
+
+/* A brand mark replaces the dot. It sits on white so dark logos stay visible
+   in the dark theme too. */
+.chip--logo {
+  padding-left: 5px;
+}
+
+.chip--logo::before {
+  display: none;
+}
+
+.chip__logo {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  display: block;
+  padding: 3px;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08);
+}
+
+/* ── Board & cards ──────────────────────────────────────────────────────── */
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-content: stretch;
+  gap: 14px;
+  padding: 14px;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  border-radius: 28px;
+  transition: background-color 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+
+.span-6 {
+  grid-column: span 6;
+}
+
+.span-3 {
+  grid-column: span 3;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  transition: background-color 0.3s var(--ease), border-color 0.3s var(--ease),
+    box-shadow 0.25s var(--ease);
+}
+
+.card__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.card__icon {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  color: #fff;
+  background: linear-gradient(145deg, #fb923c, #f97316);
+  box-shadow: 0 8px 16px -9px rgba(249, 115, 22, 0.9);
+}
+
+.card__icon .icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.9;
+}
+
+.card__title {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+.card__sub {
+  margin-top: 1px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--text-mute);
+}
+
+.card__text {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-soft);
+}
+
+.card__note {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--text-mute);
+}
+
+.card__link {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.card__link:hover {
+  color: var(--accent);
+}
+
+.card__link .icon {
+  width: 12px;
+  height: 12px;
+}
+
+/* ── Project slider (home) ──────────────────────────────────────────────── */
+
+.slider {
+  position: relative;
+  flex: 1;
+  min-height: 200px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #0d1017;
+  isolation: isolate;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 5px;
+  padding: 16px;
+  color: #fff;
+}
+
+.slide__art {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+}
+
+.slide__art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(6, 8, 12, 0.1) 0%, rgba(6, 8, 12, 0.86) 72%);
+}
+
+.slide__art--a {
+  background-image: radial-gradient(120% 90% at 82% 12%, rgba(249, 115, 22, 0.45), transparent 60%),
+    linear-gradient(150deg, #1c2433, #0a0d13 70%);
+}
+
+.slide__art--b {
+  background-image: radial-gradient(120% 90% at 18% 10%, rgba(45, 212, 191, 0.4), transparent 60%),
+    linear-gradient(150deg, #10262a, #080d10 70%);
+}
+
+.slide__art--c {
+  background-image: radial-gradient(120% 90% at 78% 88%, rgba(139, 92, 246, 0.45), transparent 62%),
+    linear-gradient(150deg, #221a30, #0a0810 70%);
+}
+
+.slide__kicker {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.slide__title {
+  max-width: 26ch;
+  font-size: clamp(1.1rem, 1.55vw, 1.45rem);
+  font-weight: 650;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+.slide__desc {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.66);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.slide__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.slide__tags span {
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--line-strong);
+  transition: width 0.25s var(--ease), background-color 0.25s var(--ease);
+}
+
+.dot::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+}
+
+.dot.is-active {
+  width: 18px;
+  border-radius: 99px;
+  background: var(--accent);
+}
+
+/* ── About card art ─────────────────────────────────────────────────────── */
+
+.about-art {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  min-height: 170px;
+  margin-top: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.about-art:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 4px;
+  border-radius: 16px;
+}
+
+.about-art img {
+  width: min(88%, 220px);
+  height: auto;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.09);
+  background: #fff;
+  box-shadow: 0 22px 38px -26px rgba(8, 12, 22, 0.5);
+  transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+
+.about-art:hover img {
+  transform: translateY(-2px) scale(1.015);
+  box-shadow: 0 26px 42px -24px rgba(8, 12, 22, 0.6);
+}
+
+/* ── AI builds list (each row opens a detail modal) ─────────────────────── */
+
+.builds {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Rows share the card height evenly, so the list fills the card instead of
+   leaving a dead block under the last one. */
+.builds > li {
+  display: flex;
+  flex: 1;
+}
+
+.builds > li + li {
+  border-top: 1px solid var(--line);
+}
+
+.build {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text-soft);
+  font: inherit;
+  font-size: 11.5px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease),
+    color 0.2s var(--ease);
+}
+
+.build:hover,
+.build:focus-visible {
+  background: var(--surface-2);
+  border-color: var(--line);
+  color: var(--text);
+}
+
+.build:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 1px;
+}
+
+.build__dot {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dot, var(--accent-2));
+}
+
+.build__name {
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.build__status {
+  flex: 0 0 auto;
+  margin-left: auto;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.build__arrow {
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  opacity: 0;
+  transform: translateX(-3px);
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+}
+
+.build:hover .build__arrow,
+.build:focus-visible .build__arrow {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Credentials: certificate links ─────────────────────────────────────── */
+
+.cred {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cred__label {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+}
+
+.cred__label span {
+  color: var(--accent);
+}
+
+.cred__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.cred__item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 7px 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xs);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease),
+    background-color 0.2s var(--ease);
+}
+
+.cred__item:hover {
+  border-color: var(--cert-tint, var(--accent));
+  color: var(--cert-tint, var(--accent));
+}
+
+.cred__dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cert-tint, var(--accent));
+}
+
+.cred__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cred__go {
+  flex: none;
+  opacity: 0.4;
+  transition: opacity 0.2s var(--ease);
+}
+
+.cred__item:hover .cred__go {
+  opacity: 1;
+}
+
+/* ── Services ───────────────────────────────────────────────────────────── */
+
+.service-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.service {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 2px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12.5px;
+  font-weight: 550;
+}
+
+.service:last-child {
+  border-bottom: 0;
+  padding-bottom: 2px;
+}
+
+.service__num {
+  font-size: 10px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-mute);
+}
+
+.service__name {
+  transition: color 0.2s var(--ease);
+}
+
+.service:hover .service__name {
+  color: var(--accent);
+}
+
+/* ── Testimonials ───────────────────────────────────────────────────────── */
+
+.quotes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: auto;
+}
+
+.quote {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.quote__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: linear-gradient(150deg, #fdba74, #f97316);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.quote__name {
+  font-size: 11.5px;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.quote__role {
+  font-size: 10px;
+  color: var(--text-mute);
+}
+
+.quote__text {
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--text-soft);
+}
+
+.quote__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: auto;
+}
+
+.quote__tags span {
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--text-mute);
+}
+
+.quote--cta {
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  border-style: dashed;
+}
+
+.quote__next {
+  font-size: 12.5px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.quote__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--accent);
+}
+
+.quote__link .icon {
+  width: 13px;
+  height: 13px;
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────────── */
+
+.page-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 2px 8px 6px;
+  font-size: 10.5px;
+  color: var(--text-mute);
+}
+
+.page-foot a:hover {
+  color: var(--text-soft);
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 1180px) {
+  .span-6,
+  .span-3 {
+    grid-column: span 6;
+  }
+}
+
+/* Below this the shell is one column and the phone layout takes over, so the
+   sidebar is gone. Only the frame itself still needs adjusting here. */
+@media (max-width: 1024px) {
+  .app-shell {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    padding: 14px;
+  }
+}
+
+@media (max-width: 760px) {
+  .board {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    padding: 10px;
+    border-radius: 22px;
+  }
+
+  .span-6,
+  .span-3 {
+    grid-column: auto;
+  }
+
+  .quotes {
+    grid-template-columns: 1fr;
+  }
+
+  .slider {
+    min-height: 220px;
+  }
+
+  .page-foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+}
+
+@media (max-width: 520px) {
+  /* A one-line headline would drop under 22px here, so let it wrap instead. */
+  .hero__title {
+    font-size: clamp(1.7rem, 7.4vw, 2rem);
+    white-space: normal;
+    text-wrap: balance;
+  }
+}
